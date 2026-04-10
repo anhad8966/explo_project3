@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinematics Analysis Suite</title>
+    
+    <!-- Tailwind CSS for Professional Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', 
+        }
+    </script>
+    
+    <!-- PrismJS for Python Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    
+    <!-- Chart.js for Graph Generation -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .dark body { background-color: #0f172a; }
+        
+        .canvas-container { background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px; }
+        .dark .canvas-container { background-image: radial-gradient(#334155 1px, transparent 1px); background-color: #020617; }
+        
+        .tab-active { border-bottom: 2px solid #2563eb; color: #1d4ed8; font-weight: 600; }
+        .dark .tab-active { border-bottom: 2px solid #3b82f6; color: #60a5fa; }
+        
+        .tab-inactive { color: #64748b; }
+        .dark .tab-inactive { color: #94a3b8; }
+        .tab-inactive:hover { color: #0f172a; }
+        .dark .tab-inactive:hover { color: #f8fafc; }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-slate-800 dark:text-slate-200 transition-colors duration-200">
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm z-10 px-6 py-4 flex justify-between items-center shrink-0">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Kinematics Analysis Suite</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Demonstration & Analysis of Mechanism Kinematics</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <!-- Theme Toggle Button -->
+            <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Dark/Light Mode">
+                <!-- Moon Icon -->
+                <svg id="icon-moon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <!-- Sun Icon -->
+                <svg id="icon-sun" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </button>
+            
+            <button onclick="toggleModal('code-modal')" class="bg-slate-800 dark:bg-blue-600 hover:bg-slate-700 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                View Python Code
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        
+        <!-- Left Sidebar: Controls -->
+        <aside class="w-full md:w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-y-auto shrink-0 flex flex-col">
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-200 dark:border-slate-800">
+                <button onclick="setMode('slider')" id="tab-slider" class="flex-1 py-3 text-sm tab-active transition-all">Slider-Crank</button>
+                <button onclick="setMode('fourbar')" id="tab-fourbar" class="flex-1 py-3 text-sm tab-inactive transition-all">Four-Bar</button>
+            </div>
+
+            <!-- Input Forms -->
+            <div class="p-6 flex-1">
+                
+                <!-- Slider-Crank Inputs -->
+                <div id="inputs-slider" class="space-y-4 block">
+                    <h3 class="font-semibold text-slate-700 dark:text-slate-300 text-sm uppercase tracking-wider mb-2">Linkage Parameters</h3>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank Length, r (m)</label>
+                        <input type="number" id="s-r" value="0.1" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Connecting Rod Length, l (m)</label>
+                        <input type="number" id="s-l" value="0.3" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank Ang. Velocity, ω (rad/s)</label>
+                        <input type="number" id="s-w" value="10" step="0.5" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                </div>
+
+                <!-- Four-Bar Inputs -->
+                <div id="inputs-fourbar" class="space-y-4 hidden">
+                    <h3 class="font-semibold text-slate-700 dark:text-slate-300 text-sm uppercase tracking-wider mb-2">Linkage Parameters</h3>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Fixed Link, L1 (m)</label>
+                        <input type="number" id="f-l1" value="0.4" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank Length, L2 (m)</label>
+                        <input type="number" id="f-l2" value="0.15" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Coupler Length, L3 (m)</label>
+                        <input type="number" id="f-l3" value="0.35" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Follower Length, L4 (m)</label>
+                        <input type="number" id="f-l4" value="0.3" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank Ang. Velocity, ω2 (rad/s)</label>
+                        <input type="number" id="f-w2" value="10" step="0.5" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                    
+                    <!-- Assembly Mode Toggle -->
+                    <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Assembly Mode (Configuration)</label>
+                        <div class="flex gap-2">
+                            <button id="btn-config-open" onclick="setAssemblyMode(1)" class="flex-1 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white transition-colors">Open / Upward</button>
+                            <button id="btn-config-crossed" onclick="setAssemblyMode(-1)" class="flex-1 py-1.5 text-xs font-medium rounded-md bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">Crossed / Down</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 border-t border-slate-200 dark:border-slate-800 pt-6">
+                    <h3 class="font-semibold text-slate-700 dark:text-slate-300 text-sm uppercase tracking-wider mb-2">Analysis Constraints</h3>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank Angles (θ) for Table & Graphs (comma separated)</label>
+                        <input type="text" id="calc-angles" value="0, 30, 45, 60, 90, 120, 180, 270, 360" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
+                    </div>
+                    <button onclick="updateAnalysis()" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                        Refresh Analysis
+                    </button>
+                    <!-- NEW: Generate Graphs Button -->
+                    <button onclick="openGraphsModal()" class="mt-3 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm border border-slate-300 dark:border-slate-600 flex justify-center items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                        Generate Graphs
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Main Area: Canvas & Table -->
+        <main class="flex-1 flex flex-col overflow-hidden bg-slate-50 dark:bg-slate-950">
+            <!-- Animation Area -->
+            <div class="h-1/2 min-h-[300px] border-b border-slate-200 dark:border-slate-800 relative canvas-container">
+                <canvas id="mechCanvas" class="w-full h-full block"></canvas>
+                
+                <!-- Overlays -->
+                <div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg shadow-sm">
+                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Live Simulation</span>
+                    <div class="text-sm font-mono text-slate-800 dark:text-slate-200" id="live-data">θ: 0.0°</div>
+                </div>
+
+                <!-- Zoom Controls -->
+                <div class="absolute top-4 right-4 flex gap-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-700 p-1 rounded-lg shadow-sm">
+                    <button onclick="zoomOut()" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-600 dark:text-slate-400 transition-colors" title="Zoom Out">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                    </button>
+                    <div class="w-px bg-slate-200 dark:bg-slate-700 my-1"></div>
+                    <button onclick="zoomIn()" class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-600 dark:text-slate-400 transition-colors" title="Zoom In">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </button>
+                </div>
+
+                <div class="absolute bottom-4 right-4 flex gap-2">
+                    <button onclick="togglePlay()" id="play-btn" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 p-2 rounded-full shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300">
+                        <!-- Pause Icon -->
+                        <svg id="icon-pause" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        <!-- Play Icon -->
+                        <svg id="icon-play" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Table Area -->
+            <div class="h-1/2 bg-white dark:bg-slate-900 overflow-hidden flex flex-col">
+                <div class="px-6 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                    <h2 class="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Kinematic Results
+                    </h2>
+                    <span id="table-title" class="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded">Slider-Crank Model</span>
+                </div>
+                <div class="overflow-auto flex-1 p-0">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead class="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-100 dark:bg-slate-800/80 sticky top-0 shadow-sm" id="table-head">
+                            <!-- Injected dynamically -->
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800" id="table-body">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Python Code Modal -->
+    <div id="code-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex justify-center items-center p-4 md:p-8">
+        <div class="bg-slate-900 rounded-xl shadow-2xl w-full max-w-4xl max-h-full flex flex-col overflow-hidden border border-slate-700">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-slate-700 bg-slate-800">
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    Analytical Python Source Code
+                </h2>
+                <button onclick="toggleModal('code-modal')" class="text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="overflow-auto flex-1 p-4 bg-slate-900 text-sm">
+<pre><code class="language-python" id="python-code-block">
+"""
+ME223: Kinematics of Machines
+Group Project 2 — Problem 1 & 2
+Four-Bar Mechanism & Slider-Crank Analysis
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def fourbar_position(L1, L2, L3, L4, theta2_rad):
+    """
+    Solve four-bar position using Freudenstein's equation.
+    Returns (theta3, theta4). Raises ValueError at toggle positions.
+    """
+    K1 = L1 / L4
+    K2 = L1 / L2
+    K3 = (L2**2 - L3**2 + L4**2 + L1**2) / (2 * L2 * L4)
+
+    A = np.cos(theta2_rad) - K1 - K2 * np.cos(theta2_rad) + K3
+    B = -2 * np.sin(theta2_rad)
+    C = K1 - (K2 + 1) * np.cos(theta2_rad) + K3
+
+    disc = B**2 - 4 * A * C
+    if disc < 0:
+        raise ValueError("Toggle position — mechanism cannot assemble.")
+
+    # Assembly Mode: 1 for Open (Upward), -1 for Crossed (Downward)
+    mode = 1 
+    theta4 = 2 * np.arctan((-B + mode * np.sqrt(disc)) / (2 * A))
+
+    Ax = L1 + L4 * np.cos(theta4) - L2 * np.cos(theta2_rad)
+    Ay = L4 * np.sin(theta4) - L2 * np.sin(theta2_rad)
+    theta3 = np.arctan2(Ay, Ax)
+
+    return theta3, theta4
+
+
+def fourbar_velocity(L2, L3, L4, theta2, theta3, theta4, omega2):
+    """ Velocity analysis via matrix method. """
+    A = np.array([
+        [-L3 * np.sin(theta3),  L4 * np.sin(theta4)],
+        [ L3 * np.cos(theta3), -L4 * np.cos(theta4)]
+    ])
+    b = np.array([
+         L2 * omega2 * np.sin(theta2),
+        -L2 * omega2 * np.cos(theta2)
+    ])
+    omega3, omega4 = np.linalg.solve(A, b)
+    return omega3, omega4
+
+
+def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, omega4, alpha2=0.0):
+    """ Acceleration analysis via matrix method. """
+    A = np.array([
+        [-L3 * np.sin(theta3),  L4 * np.sin(theta4)],
+        [ L3 * np.cos(theta3), -L4 * np.cos(theta4)]
+    ])
+    rhs1 = (L2 * alpha2 * np.sin(theta2) + L2 * omega2**2 * np.cos(theta2)
+            + L3 * omega3**2 * np.cos(theta3) - L4 * omega4**2 * np.cos(theta4))
+    rhs2 = (-L2 * alpha2 * np.cos(theta2) + L2 * omega2**2 * np.sin(theta2)
+             + L3 * omega3**2 * np.sin(theta3) - L4 * omega4**2 * np.sin(theta4))
+    alpha3, alpha4 = np.linalg.solve(A, np.array([rhs1, rhs2]))
+    return alpha3, alpha4
+</code></pre>
+            </div>
+            <div class="px-6 py-4 bg-slate-800 border-t border-slate-700 flex justify-end">
+                <button onclick="copyCode()" id="copy-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    Copy to Clipboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Graphs Modal -->
+    <div id="graphs-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex justify-center items-center p-4 md:p-8">
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-6xl h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700">
+            <div class="flex justify-between items-center px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                <h2 class="text-lg font-semibold text-slate-800 dark:text-white flex items-center gap-2" id="graphs-modal-title">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                    Kinematic Analysis Graphs
+                </h2>
+                <button onclick="toggleModal('graphs-modal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="overflow-auto flex-1 p-6 bg-white dark:bg-slate-900">
+                <!-- 2x2 Grid for Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full min-h-[600px]">
+                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30">
+                        <canvas id="chart1"></canvas>
+                    </div>
+                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30">
+                        <canvas id="chart2"></canvas>
+                    </div>
+                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30">
+                        <canvas id="chart3"></canvas>
+                    </div>
+                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30">
+                        <canvas id="chart4"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- State Management ---
+        const state = {
+            mode: 'slider', // 'slider' or 'fourbar'
+            isPlaying: true,
+            currentTheta: 0, 
+            zoom: 1.0,       
+            slider: { r: 0.1, l: 0.3, w: 10 },
+            fourbar: { l1: 0.4, l2: 0.15, l3: 0.35, l4: 0.3, w2: 10, mode: 1 },
+            analysisAngles: [0, 30, 45, 60, 90, 120, 180, 270, 360],
+            graphData: {} // Stores data computed during updateAnalysis for charts
+        };
+
+        const canvas = document.getElementById('mechCanvas');
+        const ctx = canvas.getContext('2d');
+        const liveDataEl = document.getElementById('live-data');
+        let lastTime = performance.now();
+        let chartInstances = []; // Holds Chart.js instances
+
+        function init() {
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', () => {
+                    readInputs();
+                    updateAnalysis();
+                });
+            });
+
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault(); 
+                if (e.deltaY < 0) zoomIn();
+                else zoomOut();
+            }, { passive: false });
+
+            updateAnalysis();
+            requestAnimationFrame(animate);
+        }
+
+        function toggleTheme() {
+            const htmlClasses = document.documentElement.classList;
+            htmlClasses.toggle('dark');
+            const isDark = htmlClasses.contains('dark');
+            document.getElementById('icon-moon').style.display = isDark ? 'none' : 'block';
+            document.getElementById('icon-sun').style.display = isDark ? 'block' : 'none';
+            
+            // Re-render graphs to update font/grid colors if modal is open
+            if(!document.getElementById('graphs-modal').classList.contains('hidden')){
+                renderGraphs();
+            }
+        }
+
+        function setMode(mode) {
+            state.mode = mode;
+            state.currentTheta = 0; 
+            state.zoom = 1.0; 
+            
+            document.getElementById('tab-slider').className = mode === 'slider' ? 'flex-1 py-3 text-sm tab-active transition-all' : 'flex-1 py-3 text-sm tab-inactive transition-all';
+            document.getElementById('tab-fourbar').className = mode === 'fourbar' ? 'flex-1 py-3 text-sm tab-active transition-all' : 'flex-1 py-3 text-sm tab-inactive transition-all';
+            
+            document.getElementById('inputs-slider').style.display = mode === 'slider' ? 'block' : 'none';
+            document.getElementById('inputs-fourbar').style.display = mode === 'fourbar' ? 'block' : 'none';
+            
+            document.getElementById('table-title').innerText = mode === 'slider' ? 'Slider-Crank Model' : 'Four-Bar Model';
+            document.getElementById('graphs-modal-title').innerHTML = `<svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>` + 
+                (mode === 'slider' ? ' Slider-Crank Analysis Graphs' : ' Four-Bar Mechanism Analysis Graphs');
+            
+            updateAnalysis();
+            if (!state.isPlaying) drawCanvas(); 
+        }
+
+        function setAssemblyMode(mode) {
+            state.fourbar.mode = mode;
+            
+            const activeClass = "flex-1 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white transition-colors";
+            const inactiveClass = "flex-1 py-1.5 text-xs font-medium rounded-md bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors";
+            
+            document.getElementById('btn-config-open').className = mode === 1 ? activeClass : inactiveClass;
+            document.getElementById('btn-config-crossed').className = mode === -1 ? activeClass : inactiveClass;
+            
+            updateAnalysis();
+            if (!state.isPlaying) drawCanvas();
+        }
+
+        function togglePlay() {
+            state.isPlaying = !state.isPlaying;
+            document.getElementById('icon-pause').classList.toggle('hidden');
+            document.getElementById('icon-play').classList.toggle('hidden');
+        }
+
+        function zoomIn() {
+            state.zoom *= 1.2;
+            if (state.zoom > 10.0) state.zoom = 10.0;
+            if (!state.isPlaying) drawCanvas();
+        }
+
+        function zoomOut() {
+            state.zoom /= 1.2;
+            if (state.zoom < 0.2) state.zoom = 0.2;
+            if (!state.isPlaying) drawCanvas();
+        }
+
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.toggle('hidden');
+        }
+
+        function openGraphsModal() {
+            toggleModal('graphs-modal');
+            renderGraphs(); // Always re-render to fit container and apply theme
+        }
+
+        function copyCode() {
+            const code = document.getElementById('python-code-block').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.innerText = "Copied!";
+                setTimeout(() => btn.innerText = "Copy to Clipboard", 2000);
+            }).catch(err => {
+                const textArea = document.createElement("textarea");
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+                const btn = document.getElementById('copy-btn');
+                btn.innerText = "Copied!";
+                setTimeout(() => btn.innerText = "Copy to Clipboard", 2000);
+            });
+        }
+
+        function readInputs() {
+            try {
+                const anglesStr = document.getElementById('calc-angles').value;
+                state.analysisAngles = anglesStr.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+                
+                // Keep strictly ascending or user-defined order for graphs, but Chart.js works best sorted if it's a progression.
+                // state.analysisAngles.sort((a, b) => a - b);
+                
+                if (state.mode === 'slider') {
+                    state.slider.r = parseFloat(document.getElementById('s-r').value) || 0.1;
+                    state.slider.l = parseFloat(document.getElementById('s-l').value) || 0.3;
+                    state.slider.w = parseFloat(document.getElementById('s-w').value) || 10;
+                } else {
+                    state.fourbar.l1 = parseFloat(document.getElementById('f-l1').value) || 0.4;
+                    state.fourbar.l2 = parseFloat(document.getElementById('f-l2').value) || 0.15;
+                    state.fourbar.l3 = parseFloat(document.getElementById('f-l3').value) || 0.35;
+                    state.fourbar.l4 = parseFloat(document.getElementById('f-l4').value) || 0.3;
+                    state.fourbar.w2 = parseFloat(document.getElementById('f-w2').value) || 10;
+                }
+            } catch (e) {
+                console.warn("Input parsing error", e);
+            }
+        }
+
+        // --- Kinematics Math Engine (For Table & Graphs) ---
+        function solveSliderCrank(r, l, w, theta) {
+            const n = l / r;
+            const sin_theta = Math.sin(theta);
+            const cos_theta = Math.cos(theta);
+            
+            if (Math.abs(sin_theta / n) > 1) return { error: "Jam/Invalid" };
+
+            const sin_phi = sin_theta / n;
+            const cos_phi = Math.sqrt(1 - sin_phi*sin_phi);
+            
+            const w_rod = (r * w * cos_theta) / (l * cos_phi);
+            const alpha_rod = (-r * w*w * sin_theta + l * w_rod*w_rod * sin_phi) / (l * cos_phi);
+            
+            const v_slider = -r * w * sin_theta - l * w_rod * sin_phi;
+            const a_slider = -r * w*w * cos_theta - l * alpha_rod * sin_phi - l * w_rod*w_rod * cos_phi;
+
+            return { w_rod, alpha_rod, v_slider, a_slider, phi: Math.asin(sin_phi) };
+        }
+
+        function solveFourBar(L1, L2, L3, L4, w2, theta2) {
+            const k1 = L1 / L2;
+            const k2 = L1 / L4;
+            const k3 = (L1*L1 + L2*L2 - L3*L3 + L4*L4) / (2 * L2 * L4);
+            
+            const A = Math.cos(theta2) - k1 - k2 * Math.cos(theta2) + k3;
+            const B = -2 * Math.sin(theta2);
+            const C = k1 - (k2 + 1) * Math.cos(theta2) + k3;
+            
+            const disc = B*B - 4*A*C;
+            if (disc < 0) return { error: "Not Reachable" };
+
+            const sign = state.fourbar.mode; 
+            const theta4 = 2 * Math.atan((-B + sign * Math.sqrt(disc)) / (2 * A));
+            
+            const sin3 = (L4 * Math.sin(theta4) - L2 * Math.sin(theta2)) / L3;
+            const cos3 = (L1 + L4 * Math.cos(theta4) - L2 * Math.cos(theta2)) / L3;
+            const theta3 = Math.atan2(sin3, cos3);
+            
+            const den = Math.sin(theta3 - theta4);
+            if (Math.abs(den) < 1e-6) return { error: "Singularity" };
+
+            const w3 = (L2 * w2 * Math.sin(theta4 - theta2)) / (L3 * den);
+            const w4 = (L2 * w2 * Math.sin(theta3 - theta2)) / (L4 * den);
+            
+            const P = -L2 * w2*w2 * Math.cos(theta2) - L3 * w3*w3 * Math.cos(theta3) + L4 * w4*w4 * Math.cos(theta4);
+            const Q = -L2 * w2*w2 * Math.sin(theta2) - L3 * w3*w3 * Math.sin(theta3) + L4 * w4*w4 * Math.sin(theta4);
+            
+            const alpha3 = (P * Math.cos(theta4) + Q * Math.sin(theta4)) / (L3 * den);
+            const alpha4 = (P * Math.cos(theta3) + Q * Math.sin(theta3)) / (L4 * den);
+
+            return { theta3, theta4, w3, w4, alpha3, alpha4 };
+        }
+
+        // --- View & Data Updates ---
+        function updateAnalysis() {
+            readInputs();
+            const thead = document.getElementById('table-head');
+            const tbody = document.getElementById('table-body');
+            
+            let headHTML = '';
+            let bodyHTML = '';
+
+            // Reset graph data objects
+            state.graphData = {
+                labels: [],
+                y1: [], y2: [], y3: [], y4: []
+            };
+
+            if (state.mode === 'slider') {
+                headHTML = `<tr>
+                    <th class="px-6 py-3 font-semibold">Crank Angle (θ)</th>
+                    <th class="px-6 py-3 font-semibold">Rod Ang. Vel (ω₂) rad/s</th>
+                    <th class="px-6 py-3 font-semibold">Rod Ang. Acc (α₂) rad/s²</th>
+                    <th class="px-6 py-3 font-semibold">Slider Vel (vₛ) m/s</th>
+                    <th class="px-6 py-3 font-semibold">Slider Acc (aₛ) m/s²</th>
+                </tr>`;
+                
+                state.analysisAngles.forEach(deg => {
+                    const theta = deg * Math.PI / 180;
+                    const res = solveSliderCrank(state.slider.r, state.slider.l, state.slider.w, theta);
+                    if (res.error) {
+                        bodyHTML += `<tr class="bg-red-50 dark:bg-red-900/20"><td class="px-6 py-3 font-medium">${deg}°</td><td colspan="4" class="px-6 py-3 text-red-500 dark:text-red-400">${res.error}</td></tr>`;
+                    } else {
+                        state.graphData.labels.push(deg);
+                        state.graphData.y1.push(res.w_rod);
+                        state.graphData.y2.push(res.v_slider);
+                        state.graphData.y3.push(res.alpha_rod);
+                        state.graphData.y4.push(res.a_slider);
+
+                        bodyHTML += `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <td class="px-6 py-3 font-medium text-slate-900 dark:text-slate-100">${deg}°</td>
+                            <td class="px-6 py-3 text-slate-700 dark:text-slate-300">${res.w_rod.toFixed(4)}</td>
+                            <td class="px-6 py-3 text-slate-700 dark:text-slate-300">${res.alpha_rod.toFixed(4)}</td>
+                            <td class="px-6 py-3 text-slate-700 dark:text-slate-300">${res.v_slider.toFixed(4)}</td>
+                            <td class="px-6 py-3 text-slate-700 dark:text-slate-300">${res.a_slider.toFixed(4)}</td>
+                        </tr>`;
+                    }
+                });
+            } else {
+                headHTML = `<tr>
+                    <th class="px-6 py-3 font-semibold">Crank Angle (θ₂)</th>
+                    <th class="px-6 py-3 font-semibold">Coupler Vel (ω₃) rad/s</th>
+                    <th class="px-6 py-3 font-semibold">Follower Vel (ω₄) rad/s</th>
+                    <th class="px-6 py-3 font-semibold">Coupler Acc (α₃) rad/s²</th>
+                    <th class="px-6 py-3 font-semibold">Follower Acc (α₄) rad/s²</th>
+                </tr>`;
+
+                state.analysisAngles.forEach(deg => {
+                    const theta = deg * Math.PI / 180;
+                    const res = solveFourBar(state.fourbar.l1, state.fourbar.l2, state.fourbar.l3, state.fourbar.l4, state.fourbar.w2, theta);
+                    if (res.error) {
+                        bodyHTML += `<tr class="bg-red-50 dark:bg-red-900/20"><td class="px-6 py-3 font-medium">${deg}°</td><td colspan="4" class="px-6 py-3 text-red-500 dark:text-red-400">${res.error}</td></tr>`;
+                    } else {
+                        state.graphData.labels.push(deg);
+                        state.graphData.y1.push(res.w3);
+                        state.graphData.y2.push(res.w4);
+                        state.graphData.y3.push(res.alpha3);
+                        state.graphData.y4.push(res.alpha4);
+
+                        bodyHTML += `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <td class="px-6 py-3 font-medium text-slate-900 dark:text-slate-100">${deg}°</td>
+                            <td class="px-6 py-3 text-slate-700 dark:text-slate-300">${res.w3.toFixed(4)}</td>
+                            <td class="px-6 py-3 text-slate-700 dark:text-slate-300">${res.w4.toFixed(4)}</td>
+                            <td class="px-6 py-3 text-slate-700 dark:text-slate-300">${res.alpha3.toFixed(4)}</td>
+                            <td class="px-6 py-3 text-slate-700 dark:text-slate-300">${res.alpha4.toFixed(4)}</td>
+                        </tr>`;
+                    }
+                });
+            }
+
+            thead.innerHTML = headHTML;
+            tbody.innerHTML = bodyHTML;
+
+            // Automatically refresh graphs if modal is open
+            if(!document.getElementById('graphs-modal').classList.contains('hidden')){
+                renderGraphs();
+            }
+        }
+
+        // --- Chart.js Plotting Engine ---
+        function renderGraphs() {
+            // Destroy old charts to prevent overlapping renders
+            chartInstances.forEach(c => c.destroy());
+            chartInstances = [];
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const gridColor = isDark ? '#334155' : '#e2e8f0';
+            const textColor = isDark ? '#cbd5e1' : '#475569';
+            const xAxisLabel = state.mode === 'slider' ? 'Crank Angle θ (degrees)' : 'Crank Angle θ₂ (degrees)';
+
+            // Setup chart configurations
+            const configs = [];
+
+            if(state.mode === 'fourbar') {
+                configs.push(
+                    createChartConfig('Coupler Angular Velocity ω₃', state.graphData.y1, 'ω₃ (rad/s)', 'rgba(37, 99, 235, 1)', 'rgba(37, 99, 235, 0.1)', isDark, gridColor, textColor, xAxisLabel),
+                    createChartConfig('Follower Angular Velocity ω₄', state.graphData.y2, 'ω₄ (rad/s)', 'rgba(239, 68, 68, 1)', 'rgba(239, 68, 68, 0.1)', isDark, gridColor, textColor, xAxisLabel),
+                    createChartConfig('Coupler Angular Accel. α₃', state.graphData.y3, 'α₃ (rad/s²)', 'rgba(37, 99, 235, 1)', 'rgba(37, 99, 235, 0.1)', isDark, gridColor, textColor, xAxisLabel),
+                    createChartConfig('Follower Angular Accel. α₄', state.graphData.y4, 'α₄ (rad/s²)', 'rgba(239, 68, 68, 1)', 'rgba(239, 68, 68, 0.1)', isDark, gridColor, textColor, xAxisLabel)
+                );
+            } else {
+                configs.push(
+                    createChartConfig('Rod Angular Velocity ω₂', state.graphData.y1, 'ω₂ (rad/s)', 'rgba(37, 99, 235, 1)', 'rgba(37, 99, 235, 0.1)', isDark, gridColor, textColor, xAxisLabel),
+                    createChartConfig('Slider Velocity vₛ', state.graphData.y2, 'vₛ (m/s)', 'rgba(16, 185, 129, 1)', 'rgba(16, 185, 129, 0.1)', isDark, gridColor, textColor, xAxisLabel),
+                    createChartConfig('Rod Angular Accel. α₂', state.graphData.y3, 'α₂ (rad/s²)', 'rgba(37, 99, 235, 1)', 'rgba(37, 99, 235, 0.1)', isDark, gridColor, textColor, xAxisLabel),
+                    createChartConfig('Slider Accel. aₛ', state.graphData.y4, 'aₛ (m/s²)', 'rgba(16, 185, 129, 1)', 'rgba(16, 185, 129, 0.1)', isDark, gridColor, textColor, xAxisLabel)
+                );
+            }
+
+            // Render to the 4 canvases
+            ['chart1', 'chart2', 'chart3', 'chart4'].forEach((id, index) => {
+                const ctx = document.getElementById(id).getContext('2d');
+                chartInstances.push(new Chart(ctx, configs[index]));
+            });
+        }
+
+        // Factory function for chart creation
+        function createChartConfig(title, dataPoints, yLabel, lineColor, fillAreaColor, isDark, gridColor, textColor, xAxisLabel) {
+            return {
+                type: 'line',
+                data: {
+                    labels: state.graphData.labels,
+                    datasets: [{
+                        label: title,
+                        data: dataPoints,
+                        borderColor: lineColor,
+                        backgroundColor: fillAreaColor,
+                        borderWidth: 2,
+                        pointBackgroundColor: lineColor,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        fill: true,
+                        tension: 0.2 // Slight smoothing
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: title,
+                            color: textColor,
+                            font: { size: 14, family: "'Inter', sans-serif", weight: 'normal' }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                            titleColor: isDark ? '#fff' : '#000',
+                            bodyColor: isDark ? '#e2e8f0' : '#334155',
+                            borderColor: gridColor,
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: xAxisLabel, color: textColor },
+                            grid: { color: gridColor },
+                            ticks: { color: textColor }
+                        },
+                        y: {
+                            title: { display: true, text: yLabel, color: textColor },
+                            grid: { 
+                                color: (ctx) => ctx.tick.value === 0 ? (isDark ? '#64748b' : '#94a3b8') : gridColor,
+                                lineWidth: (ctx) => ctx.tick.value === 0 ? 1.5 : 1,
+                                borderDash: (ctx) => ctx.tick.value === 0 ? [5, 5] : []
+                            },
+                            ticks: { color: textColor }
+                        }
+                    },
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false }
+                }
+            };
+        }
+
+        // --- Canvas Rendering Engine ---
+        function resizeCanvas() {
+            if (!canvas || !canvas.parentElement) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            const w = Math.round(rect.width);
+            const h = Math.round(rect.height);
+            if (canvas.width !== w || canvas.height !== h) {
+                canvas.width = w;
+                canvas.height = h;
+            }
+        }
+
+        function animate(time) {
+            if (!time) time = performance.now();
+            let dt = (time - lastTime) / 1000;
+            if (dt > 0.1 || isNaN(dt)) dt = 0.016; 
+            lastTime = time;
+
+            resizeCanvas();
+
+            if (state.isPlaying) {
+                const w = state.mode === 'slider' ? state.slider.w : state.fourbar.w2;
+                state.currentTheta = (state.currentTheta + w * dt) % (2 * Math.PI);
+                if (isNaN(state.currentTheta)) state.currentTheta = 0;
+                if (state.currentTheta < 0) state.currentTheta += 2 * Math.PI;
+            }
+
+            if (canvas.width > 0 && canvas.height > 0) {
+                drawCanvas();
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.scale(1, -1); // Standard cartesian (Y up)
+            
+            const isDark = document.documentElement.classList.contains('dark');
+
+            if (state.mode === 'slider') {
+                drawSliderCrankRobust(isDark);
+            } else {
+                drawFourBarRobust(isDark);
+            }
+
+            ctx.restore();
+
+            const deg = (state.currentTheta * 180 / Math.PI).toFixed(1);
+            liveDataEl.innerText = `θ: ${deg}°`;
+        }
+
+        // --- Mechanical Drawing Primitives ---
+        function drawPin(x, y, isDark, scale) {
+            const rad = 5 / scale;
+            ctx.beginPath();
+            ctx.arc(x, y, rad, 0, 2*Math.PI);
+            ctx.fillStyle = isDark ? '#1e293b' : '#f8fafc';
+            ctx.fill();
+            ctx.lineWidth = 2 / scale;
+            ctx.strokeStyle = isDark ? '#94a3b8' : '#334155';
+            ctx.stroke();
+            
+            // Inner dot
+            ctx.beginPath();
+            ctx.arc(x, y, rad * 0.3, 0, 2*Math.PI);
+            ctx.fillStyle = isDark ? '#94a3b8' : '#334155';
+            ctx.fill();
+        }
+
+        function drawGroundPivot(x, y, isDark, scale) {
+            const size = 18 / scale;
+            ctx.save();
+            ctx.translate(x, y);
+            
+            // Base Triangle
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-size/1.5, -size);
+            ctx.lineTo(size/1.5, -size);
+            ctx.closePath();
+            ctx.fillStyle = isDark ? '#1e293b' : '#e2e8f0';
+            ctx.fill();
+            ctx.strokeStyle = isDark ? '#475569' : '#64748b';
+            ctx.lineWidth = 2 / scale;
+            ctx.stroke();
+
+            // Hatches (ground indicator)
+            ctx.beginPath();
+            for(let i = -size/1.5; i <= size/1.5; i += size/3) {
+                ctx.moveTo(i, -size);
+                ctx.lineTo(i - size/3, -size - size/2);
+            }
+            ctx.stroke();
+            ctx.restore();
+            
+            drawPin(x, y, isDark, scale);
+        }
+
+        // --- Robust Solvers for Perfect Visual Animation ---
+
+        function drawSliderCrankRobust(isDark) {
+            const { r, l } = state.slider;
+            
+            const maxReach = r + l;
+            const scale = ((Math.min(canvas.width, canvas.height) * 0.4) / maxReach) * state.zoom;
+            if (scale <= 0 || !isFinite(scale)) return;
+            
+            ctx.scale(scale, scale);
+            ctx.translate(-maxReach/2, 0);
+
+            // Robust Geometric Position
+            const xA = r * Math.cos(state.currentTheta);
+            const yA = r * Math.sin(state.currentTheta);
+            
+            // Determine slider x via pythagoras (guarantees connection)
+            const underRoot = l*l - yA*yA;
+            const isBroken = underRoot < 0;
+            const xB = isBroken ? xA + l : xA + Math.sqrt(underRoot);
+
+            const trackY = 0;
+            const bWidth = (r+l)*0.2;
+            const bHeight = bWidth * 0.5;
+
+            // 1. Draw Slider Track (Ground)
+            ctx.beginPath();
+            ctx.moveTo(-r*1.5, trackY - bHeight/2);
+            ctx.lineTo(maxReach*1.2, trackY - bHeight/2);
+            ctx.strokeStyle = isDark ? '#475569' : '#94a3b8';
+            ctx.lineWidth = 4 / scale;
+            ctx.stroke();
+            
+            // Track Hatches
+            ctx.beginPath();
+            for(let i = -r*1.5; i <= maxReach*1.2; i += 20/scale) {
+                ctx.moveTo(i, trackY - bHeight/2 - 2/scale);
+                ctx.lineTo(i - 10/scale, trackY - bHeight/2 - 12/scale);
+            }
+            ctx.lineWidth = 2 / scale;
+            ctx.stroke();
+
+            if (isBroken) {
+                ctx.save();
+                ctx.scale(1, -1);
+                ctx.fillStyle = isDark ? '#f87171' : 'red';
+                ctx.font = `bold ${24/state.zoom}px sans-serif`;
+                ctx.fillText("MECHANISM DISCONNECTED", 0, 40/state.zoom);
+                ctx.restore();
+            }
+
+            // 2. Draw Links
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            // Crank
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(xA, yA);
+            ctx.strokeStyle = isDark ? '#3b82f6' : '#2563eb';
+            ctx.lineWidth = 8 / scale;
+            ctx.stroke();
+
+            // Coupler Rod
+            ctx.beginPath();
+            ctx.moveTo(xA, yA);
+            ctx.lineTo(xB, trackY);
+            ctx.strokeStyle = isDark ? '#94a3b8' : '#64748b';
+            ctx.lineWidth = 8 / scale;
+            ctx.stroke();
+
+            // 3. Draw Slider Block
+            ctx.fillStyle = isDark ? '#334155' : '#e2e8f0';
+            ctx.strokeStyle = isDark ? '#64748b' : '#475569';
+            ctx.lineWidth = 3 / scale;
+            
+            // Centered block around pin
+            ctx.fillRect(xB - bWidth/2, trackY - bHeight/2, bWidth, bHeight);
+            ctx.strokeRect(xB - bWidth/2, trackY - bHeight/2, bWidth, bHeight);
+
+            // 4. Draw Pins
+            drawGroundPivot(0, 0, isDark, scale);
+            drawPin(xA, yA, isDark, scale);
+            drawPin(xB, trackY, isDark, scale);
+        }
+
+        function drawFourBarRobust(isDark) {
+            const { l1, l2, l3, l4 } = state.fourbar;
+            
+            const maxExtent = Math.max(l1, l2+l3, l4);
+            const scale = ((Math.min(canvas.width, canvas.height) * 0.35) / maxExtent) * state.zoom;
+            if (scale <= 0 || !isFinite(scale)) return;
+            
+            ctx.scale(scale, scale);
+            ctx.translate(-l1/2, 0); 
+
+            // Robust Geometric Circle Intersection
+            const xA = l2 * Math.cos(state.currentTheta);
+            const yA = l2 * Math.sin(state.currentTheta);
+            
+            const o4x = l1, o4y = 0;
+            const dx = o4x - xA;
+            const dy = o4y - yA;
+            const d = Math.sqrt(dx*dx + dy*dy);
+            
+            let xB = 0, yB = 0;
+            let isBroken = false;
+
+            if (d > l3 + l4 || d < Math.abs(l3 - l4)) {
+                isBroken = true;
+                xB = o4x + l4; // Default straight out for broken visualization
+                yB = 0;
+            } else {
+                const a = (l3*l3 - l4*l4 + d*d) / (2*d);
+                const h = Math.sqrt(l3*l3 - a*a);
+                const p2x = xA + a * dx / d;
+                const p2y = yA + a * dy / d;
+                
+                // Flip intersection point based on assembly mode
+                const sign = state.fourbar.mode; 
+                xB = p2x + sign * h * dy / d; 
+                yB = p2y - sign * h * dx / d;
+            }
+
+            if (isBroken) {
+                ctx.save();
+                ctx.scale(1, -1);
+                ctx.fillStyle = isDark ? '#f87171' : '#ef4444';
+                ctx.font = `bold ${20/state.zoom}px sans-serif`;
+                ctx.fillText(`GRASHOF LIMIT REACHED`, -l1/2, (l2+l3)/2);
+                ctx.restore();
+            }
+
+            // Draw Ground Link connection (visual only)
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(o4x, o4y);
+            ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+            ctx.lineWidth = 12 / scale;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Draw Links
+            const lw = 8 / scale;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Crank (L2)
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(xA, yA);
+            ctx.strokeStyle = isDark ? '#3b82f6' : '#2563eb';
+            ctx.lineWidth = lw;
+            ctx.stroke();
+
+            // Coupler (L3) - dashed if broken
+            ctx.beginPath();
+            if (isBroken) ctx.setLineDash([15/scale, 10/scale]);
+            ctx.moveTo(xA, yA);
+            ctx.lineTo(xB, yB);
+            ctx.strokeStyle = isDark ? '#94a3b8' : '#64748b';
+            ctx.lineWidth = lw;
+            ctx.stroke();
+            ctx.setLineDash([]); // reset
+
+            // Follower (L4)
+            ctx.beginPath();
+            ctx.moveTo(o4x, o4y);
+            ctx.lineTo(xB, yB);
+            ctx.strokeStyle = isDark ? '#38bdf8' : '#0ea5e9';
+            ctx.lineWidth = lw;
+            ctx.stroke();
+
+            // Draw Pivots & Pins
+            drawGroundPivot(0, 0, isDark, scale);
+            drawGroundPivot(o4x, o4y, isDark, scale);
+            drawPin(xA, yA, isDark, scale);
+            if (!isBroken) {
+                drawPin(xB, yB, isDark, scale);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
