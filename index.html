@@ -8,9 +8,7 @@
     <!-- Tailwind CSS for Professional Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class', 
-        }
+        tailwind.config = { darkMode: 'class' }
     </script>
     
     <!-- PrismJS for Python Code Highlighting -->
@@ -36,7 +34,6 @@
         .tab-inactive:hover { color: #0f172a; }
         .dark .tab-inactive:hover { color: #f8fafc; }
         
-        /* Scrollbar styling */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         .dark ::-webkit-scrollbar-track { background: #1e293b; }
@@ -55,14 +52,10 @@
             <p class="text-sm text-slate-500 dark:text-slate-400">Demonstration & Analysis of Mechanism Kinematics</p>
         </div>
         <div class="flex items-center gap-3">
-            <!-- Theme Toggle Button -->
             <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Dark/Light Mode">
-                <!-- Moon Icon -->
                 <svg id="icon-moon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                <!-- Sun Icon -->
                 <svg id="icon-sun" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
             </button>
-            
             <button onclick="toggleModal('code-modal')" class="bg-slate-800 dark:bg-blue-600 hover:bg-slate-700 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                 View Python Code
@@ -75,15 +68,12 @@
         
         <!-- Left Sidebar: Controls -->
         <aside class="w-full md:w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-y-auto shrink-0 flex flex-col">
-            <!-- Tabs -->
             <div class="flex border-b border-slate-200 dark:border-slate-800">
                 <button onclick="setMode('slider')" id="tab-slider" class="flex-1 py-3 text-sm tab-active transition-all">Slider-Crank</button>
                 <button onclick="setMode('fourbar')" id="tab-fourbar" class="flex-1 py-3 text-sm tab-inactive transition-all">Four-Bar</button>
             </div>
 
-            <!-- Input Forms -->
             <div class="p-6 flex-1">
-                
                 <!-- Slider-Crank Inputs -->
                 <div id="inputs-slider" class="space-y-4 block">
                     <h3 class="font-semibold text-slate-700 dark:text-slate-300 text-sm uppercase tracking-wider mb-2">Linkage Parameters</h3>
@@ -109,15 +99,15 @@
                         <input type="number" id="f-l1" value="0.4" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank Length, L2 (m)</label>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank (Input), L2 (m)</label>
                         <input type="number" id="f-l2" value="0.15" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Coupler Length, L3 (m)</label>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Coupler, L3 (m)</label>
                         <input type="number" id="f-l3" value="0.35" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Follower Length, L4 (m)</label>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Follower (Output), L4 (m)</label>
                         <input type="number" id="f-l4" value="0.3" step="0.01" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                     </div>
                     <div>
@@ -125,11 +115,10 @@
                         <input type="number" id="f-w2" value="10" step="0.5" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                     </div>
                     
-                    <!-- Assembly Mode Toggle -->
                     <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                         <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Assembly Mode (Configuration)</label>
                         <div class="flex gap-2">
-                            <button id="btn-config-open" onclick="setAssemblyMode(1)" class="flex-1 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white transition-colors">Open / Upward</button>
+                            <button id="btn-config-open" onclick="setAssemblyMode(1)" class="flex-1 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white transition-colors">Open / Up</button>
                             <button id="btn-config-crossed" onclick="setAssemblyMode(-1)" class="flex-1 py-1.5 text-xs font-medium rounded-md bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">Crossed / Down</button>
                         </div>
                     </div>
@@ -138,13 +127,12 @@
                 <div class="mt-8 border-t border-slate-200 dark:border-slate-800 pt-6">
                     <h3 class="font-semibold text-slate-700 dark:text-slate-300 text-sm uppercase tracking-wider mb-2">Analysis Constraints</h3>
                     <div>
-                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank Angles (θ) for Table & Graphs (comma separated)</label>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Crank Angles (θ) for Table (comma separated)</label>
                         <input type="text" id="calc-angles" value="0, 30, 45, 60, 90, 120, 180, 270, 360" class="w-full bg-transparent border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-400">
                     </div>
                     <button onclick="updateAnalysis()" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
                         Refresh Analysis
                     </button>
-                    <!-- NEW: Generate Graphs Button -->
                     <button onclick="openGraphsModal()" class="mt-3 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm border border-slate-300 dark:border-slate-600 flex justify-center items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
                         Generate Graphs
@@ -160,9 +148,10 @@
                 <canvas id="mechCanvas" class="w-full h-full block"></canvas>
                 
                 <!-- Overlays -->
-                <div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg shadow-sm">
+                <div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-lg shadow-sm">
                     <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest block mb-1">Live Simulation</span>
                     <div class="text-sm font-mono text-slate-800 dark:text-slate-200" id="live-data">θ: 0.0°</div>
+                    <div class="text-xs font-semibold text-blue-600 dark:text-blue-400 mt-1" id="mech-type">Classifying...</div>
                 </div>
 
                 <!-- Zoom Controls -->
@@ -178,9 +167,7 @@
 
                 <div class="absolute bottom-4 right-4 flex gap-2">
                     <button onclick="togglePlay()" id="play-btn" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 p-2 rounded-full shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300">
-                        <!-- Pause Icon -->
                         <svg id="icon-pause" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                        <!-- Play Icon -->
                         <svg id="icon-play" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
                     </button>
                 </div>
@@ -223,69 +210,131 @@
             </div>
             <div class="overflow-auto flex-1 p-4 bg-slate-900 text-sm">
 <pre><code class="language-python" id="python-code-block">
-"""
-ME223: Kinematics of Machines
-Group Project 2 — Problem 1 & 2
-Four-Bar Mechanism & Slider-Crank Analysis
-"""
-
+import sys
 import numpy as np
-import matplotlib.pyplot as plt
 
-def fourbar_position(L1, L2, L3, L4, theta2_rad):
-    """
-    Solve four-bar position using Freudenstein's equation.
-    Returns (theta3, theta4). Raises ValueError at toggle positions.
-    """
-    K1 = L1 / L4
-    K2 = L1 / L2
+# ==========================================
+# Problem 1: Slider-Crank Analysis
+# ==========================================
+# --- Input Section ---
+r = float(input("Enter crank length (r): "))
+l = float(input("Enter connecting rod length (l): "))
+
+# Condition to exit if the mechanism cannot be formed/rotate fully
+if l &lt;= r:
+    sys.exit(f"Error: Connecting rod (l={l}) must be greater than crank radius (r={r}). "
+             "Mechanism cannot be formed or will lock.")
+
+omega = float(input("Enter crank angular velocity (rad/s): "))
+angles = input("Enter crank angles in degrees (separated by space): ").split()
+
+def slider_crank_kinematics(r, l, omega, theta_deg):
+    theta = np.radians(theta_deg)
+    n = l / r
+    
+    cos_theta = np.cos(theta)
+    sin_theta = np.sin(theta)
+    denom = np.sqrt(n**2 - sin_theta**2)
+    
+    omega_2 = (omega * cos_theta) / denom
+    v_s = -r * omega * (sin_theta + (sin_theta * cos_theta) / denom)
+    alpha_2 = (-omega**2 * sin_theta * (n**2 - 1)) / (denom**3)
+    a_s = -r * (omega**2 * cos_theta + (omega**2 * (cos_theta**2 - sin_theta**2) / denom) + (omega**2 * sin_theta**2 * cos_theta**2) / (denom**3))
+    
+    return omega_2, alpha_2, v_s, a_s
+
+print(f"\n{'Angle (°)':&lt;10} {'ω_rod':&lt;15} {'α_rod':&lt;15} {'v_slider':&lt;12} {'a_slider':&lt;12}")
+print("-" * 70)
+
+for angle in angles:
+    th = float(angle)
+    w2, a2, vs, as_val = slider_crank_kinematics(r, l, omega, th)
+    print(f"{th:&lt;10} {w2:&lt;15.4f} {a2:&lt;15.4f} {vs:&lt;12.4f} {as_val:&lt;12.4f}")
+
+# ==========================================
+# Problem 2: Four-Bar Analysis
+# ==========================================
+# -----------------------------
+# INPUT
+# -----------------------------
+L1 = float(input("\nEnter L1: "))
+L2 = float(input("Enter L2: "))
+L3 = float(input("Enter L3: "))
+L4 = float(input("Enter L4: "))
+
+omega2 = float(input("Enter ω2 (rad/s): "))
+
+theta2_list = list(map(float, input("Enter θ2 (deg): ").split()))
+theta2_list = np.radians(theta2_list)
+
+# -----------------------------
+# VALIDATION
+# -----------------------------
+if min(L1, L2, L3, L4) &lt;= 0:
+    raise ValueError("All link lengths must be positive")
+
+print("\n===== RESULTS (FORMULA METHOD) =====\n")
+
+# -----------------------------
+# MAIN LOOP
+# -----------------------------
+for theta2 in theta2_list:
+
+    # ---- POSITION ----
+    K1 = L1 / L2
+    K2 = L1 / L4
     K3 = (L2**2 - L3**2 + L4**2 + L1**2) / (2 * L2 * L4)
 
-    A = np.cos(theta2_rad) - K1 - K2 * np.cos(theta2_rad) + K3
-    B = -2 * np.sin(theta2_rad)
-    C = K1 - (K2 + 1) * np.cos(theta2_rad) + K3
+    A = np.cos(theta2) - K1 - K2*np.cos(theta2) + K3
+    B = -2*np.sin(theta2)
+    C = K1 - (K2 + 1)*np.cos(theta2) + K3
 
-    disc = B**2 - 4 * A * C
-    if disc < 0:
-        raise ValueError("Toggle position — mechanism cannot assemble.")
+    D = B**2 - 4*A*C
 
-    # Assembly Mode: 1 for Open (Upward), -1 for Crossed (Downward)
-    mode = 1 
-    theta4 = 2 * np.arctan((-B + mode * np.sqrt(disc)) / (2 * A))
+    if D &lt; 0:
+        print(f"θ2 = {np.degrees(theta2):.2f}° → No real configuration ")
+        continue
 
-    Ax = L1 + L4 * np.cos(theta4) - L2 * np.cos(theta2_rad)
-    Ay = L4 * np.sin(theta4) - L2 * np.sin(theta2_rad)
-    theta3 = np.arctan2(Ay, Ax)
+    # θ4
+    theta4 = 2*np.arctan((-B - np.sqrt(D)) / (2*A))
 
-    return theta3, theta4
+    # θ3
+    num = L4*np.sin(theta4) - L2*np.sin(theta2)
+    den = L1 + L4*np.cos(theta4) - L2*np.cos(theta2)
 
+    theta3 = np.arctan2(num, den)
 
-def fourbar_velocity(L2, L3, L4, theta2, theta3, theta4, omega2):
-    """ Velocity analysis via matrix method. """
-    A = np.array([
-        [-L3 * np.sin(theta3),  L4 * np.sin(theta4)],
-        [ L3 * np.cos(theta3), -L4 * np.cos(theta4)]
-    ])
-    b = np.array([
-         L2 * omega2 * np.sin(theta2),
-        -L2 * omega2 * np.cos(theta2)
-    ])
-    omega3, omega4 = np.linalg.solve(A, b)
-    return omega3, omega4
+    # ---- VELOCITY ----
+    denom_v = np.sin(theta3 - theta4)
 
+    if abs(denom_v) &lt; 1e-6:
+        print(f"θ2 = {np.degrees(theta2):.2f}° → Toggle position")
+        continue
 
-def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, omega4, alpha2=0.0):
-    """ Acceleration analysis via matrix method. """
-    A = np.array([
-        [-L3 * np.sin(theta3),  L4 * np.sin(theta4)],
-        [ L3 * np.cos(theta3), -L4 * np.cos(theta4)]
-    ])
-    rhs1 = (L2 * alpha2 * np.sin(theta2) + L2 * omega2**2 * np.cos(theta2)
-            + L3 * omega3**2 * np.cos(theta3) - L4 * omega4**2 * np.cos(theta4))
-    rhs2 = (-L2 * alpha2 * np.cos(theta2) + L2 * omega2**2 * np.sin(theta2)
-             + L3 * omega3**2 * np.sin(theta3) - L4 * omega4**2 * np.sin(theta4))
-    alpha3, alpha4 = np.linalg.solve(A, np.array([rhs1, rhs2]))
-    return alpha3, alpha4
+    omega3 = (L2 * omega2 * np.sin(theta4 - theta2)) / (L3 * denom_v)
+
+    omega4 = (L2 * omega2 * np.sin(theta2 - theta3)) / (L4 * np.sin(theta4 - theta3))
+
+    # ---- ACCELERATION ----
+    A1 = (-L2*omega2**2*np.cos(theta2 -theta4) -
+          L3*omega3**2*np.cos(theta3 - theta4) +
+          L4*omega4**2)
+
+    A2 = (-L2*omega2**2*np.cos(theta2 - theta3) -
+          L3*omega3**2 +
+          L4*omega4**2*np.cos(theta4 -theta3))
+
+    alpha3 = A1 / (L3 * denom_v)
+
+    alpha4 = A2 / (L4 * np.sin(theta3 - theta4))
+
+    # ---- OUTPUT ----
+    print("===================================")
+    print(f"θ2 = {np.degrees(theta2):.2f}°")
+    print(f"θ3 = {np.degrees(theta3):.2f}°, θ4 = {np.degrees(theta4):.2f}°")
+
+    print(f"ω3 = {omega3:.4f} rad/s, ω4 = {omega4:.4f} rad/s")
+    print(f"α3 = {alpha3:.4f} rad/s², α4 = {alpha4:.4f} rad/s²")
 </code></pre>
             </div>
             <div class="px-6 py-4 bg-slate-800 border-t border-slate-700 flex justify-end">
@@ -296,7 +345,7 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
         </div>
     </div>
 
-    <!-- NEW: Graphs Modal -->
+    <!-- Graphs Modal -->
     <div id="graphs-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex justify-center items-center p-4 md:p-8">
         <div class="bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-6xl h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700">
             <div class="flex justify-between items-center px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
@@ -309,20 +358,25 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                 </button>
             </div>
             <div class="overflow-auto flex-1 p-6 bg-white dark:bg-slate-900">
-                <!-- 2x2 Grid for Charts -->
+                <!-- Dynamic Value Inspector -->
+                <div class="mb-6 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row items-center gap-6 shadow-sm">
+                    <div class="flex items-center gap-3 w-full md:w-auto border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 pb-4 md:pb-0 md:pr-6">
+                        <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">Lookup values at θ =</label>
+                        <div class="relative">
+                            <input type="number" id="inspect-theta" value="0" step="1" oninput="updateInspector()" class="w-24 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded px-3 py-1.5 text-sm font-mono focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 text-slate-800 dark:text-slate-200">
+                            <span class="absolute right-3 top-1.5 text-xs text-slate-400 pointer-events-none">deg</span>
+                        </div>
+                    </div>
+                    <div id="inspect-results" class="flex-1 flex flex-wrap gap-x-8 gap-y-4 w-full items-center justify-start md:justify-around">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full min-h-[600px]">
-                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30">
-                        <canvas id="chart1"></canvas>
-                    </div>
-                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30">
-                        <canvas id="chart2"></canvas>
-                    </div>
-                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30">
-                        <canvas id="chart3"></canvas>
-                    </div>
-                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30">
-                        <canvas id="chart4"></canvas>
-                    </div>
+                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30"><canvas id="chart1"></canvas></div>
+                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30"><canvas id="chart2"></canvas></div>
+                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30"><canvas id="chart3"></canvas></div>
+                    <div class="relative w-full h-64 lg:h-full border border-slate-200 dark:border-slate-800 rounded-lg p-2 bg-slate-50/50 dark:bg-slate-800/30"><canvas id="chart4"></canvas></div>
                 </div>
             </div>
         </div>
@@ -332,21 +386,22 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
     <script>
         // --- State Management ---
         const state = {
-            mode: 'slider', // 'slider' or 'fourbar'
+            mode: 'slider', 
             isPlaying: true,
             currentTheta: 0, 
             zoom: 1.0,       
-            slider: { r: 0.1, l: 0.3, w: 10 },
-            fourbar: { l1: 0.4, l2: 0.15, l3: 0.35, l4: 0.3, w2: 10, mode: 1 },
+            slider: { r: 0.1, l: 0.3, w: 10, w_dir: 1 },
+            fourbar: { l1: 0.4, l2: 0.15, l3: 0.35, l4: 0.3, w2: 10, mode: 1, w_dir: 1 },
             analysisAngles: [0, 30, 45, 60, 90, 120, 180, 270, 360],
-            graphData: {} // Stores data computed during updateAnalysis for charts
+            graphData: {} 
         };
 
         const canvas = document.getElementById('mechCanvas');
         const ctx = canvas.getContext('2d');
         const liveDataEl = document.getElementById('live-data');
+        const mechTypeEl = document.getElementById('mech-type');
         let lastTime = performance.now();
-        let chartInstances = []; // Holds Chart.js instances
+        let chartInstances = []; 
 
         function init() {
             window.addEventListener('resize', resizeCanvas);
@@ -370,16 +425,11 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
         }
 
         function toggleTheme() {
-            const htmlClasses = document.documentElement.classList;
-            htmlClasses.toggle('dark');
-            const isDark = htmlClasses.contains('dark');
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
             document.getElementById('icon-moon').style.display = isDark ? 'none' : 'block';
             document.getElementById('icon-sun').style.display = isDark ? 'block' : 'none';
-            
-            // Re-render graphs to update font/grid colors if modal is open
-            if(!document.getElementById('graphs-modal').classList.contains('hidden')){
-                renderGraphs();
-            }
+            if(!document.getElementById('graphs-modal').classList.contains('hidden')) renderGraphs();
         }
 
         function setMode(mode) {
@@ -403,7 +453,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
 
         function setAssemblyMode(mode) {
             state.fourbar.mode = mode;
-            
             const activeClass = "flex-1 py-1.5 text-xs font-medium rounded-md bg-blue-600 text-white transition-colors";
             const inactiveClass = "flex-1 py-1.5 text-xs font-medium rounded-md bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors";
             
@@ -420,26 +469,14 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             document.getElementById('icon-play').classList.toggle('hidden');
         }
 
-        function zoomIn() {
-            state.zoom *= 1.2;
-            if (state.zoom > 10.0) state.zoom = 10.0;
-            if (!state.isPlaying) drawCanvas();
-        }
-
-        function zoomOut() {
-            state.zoom /= 1.2;
-            if (state.zoom < 0.2) state.zoom = 0.2;
-            if (!state.isPlaying) drawCanvas();
-        }
-
-        function toggleModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.classList.toggle('hidden');
-        }
+        function zoomIn() { state.zoom = Math.min(state.zoom * 1.2, 10.0); if (!state.isPlaying) drawCanvas(); }
+        function zoomOut() { state.zoom = Math.max(state.zoom / 1.2, 0.2); if (!state.isPlaying) drawCanvas(); }
+        function toggleModal(modalId) { document.getElementById(modalId).classList.toggle('hidden'); }
 
         function openGraphsModal() {
             toggleModal('graphs-modal');
-            renderGraphs(); // Always re-render to fit container and apply theme
+            renderGraphs(); 
+            updateInspector();
         }
 
         function copyCode() {
@@ -466,9 +503,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                 const anglesStr = document.getElementById('calc-angles').value;
                 state.analysisAngles = anglesStr.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
                 
-                // Keep strictly ascending or user-defined order for graphs, but Chart.js works best sorted if it's a progression.
-                // state.analysisAngles.sort((a, b) => a - b);
-                
                 if (state.mode === 'slider') {
                     state.slider.r = parseFloat(document.getElementById('s-r').value) || 0.1;
                     state.slider.l = parseFloat(document.getElementById('s-l').value) || 0.3;
@@ -480,8 +514,58 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                     state.fourbar.l4 = parseFloat(document.getElementById('f-l4').value) || 0.3;
                     state.fourbar.w2 = parseFloat(document.getElementById('f-w2').value) || 10;
                 }
-            } catch (e) {
-                console.warn("Input parsing error", e);
+            } catch (e) { console.warn("Input parsing error", e); }
+        }
+
+        // --- Mechanism Classification & Snapping (Bouncing & Limit Logic) ---
+        function getFourBarClassification(l1, l2, l3, l4) {
+            const maxL = Math.max(l1, l2, l3, l4);
+            if (maxL >= l1+l2+l3+l4 - maxL) return "Invalid Mechanism (Cannot Assemble)";
+            const sorted = [l1, l2, l3, l4].sort((a,b) => a-b);
+            const isGrashof = (sorted[0] + sorted[3] <= sorted[1] + sorted[2]);
+            if (isGrashof) {
+                if (sorted[0] === l1) return "Grashof: Double-Crank";
+                if (sorted[0] === l2) return "Grashof: Crank-Rocker";
+                if (sorted[0] === l4) return "Grashof: Rocker-Crank";
+                if (sorted[0] === l3) return "Grashof: Double-Rocker";
+            }
+            return "Non-Grashof: Double-Rocker";
+        }
+
+        function getSliderClassification(r, l) {
+            if (l > r) return "Standard Slider-Crank";
+            if (l === r) return "Toggle Slider-Crank (Singularity)";
+            return "Rocker-Slider (Oscillating Limits)";
+        }
+
+        function snapToValidLimits() {
+            if (state.mode === 'fourbar') {
+                const { l1, l2, l3, l4 } = state.fourbar;
+                const maxL = Math.max(l1, l2, l3, l4);
+                if (maxL >= l1+l2+l3+l4 - maxL) return;
+
+                let d2 = l1*l1 + l2*l2 - 2*l1*l2*Math.cos(state.currentTheta);
+                let d = Math.sqrt(d2);
+
+                if (d > l3 + l4) {
+                    let cosTh = (l1*l1 + l2*l2 - (l3+l4)*(l3+l4)) / (2*l1*l2);
+                    cosTh = Math.max(-1, Math.min(1, cosTh));
+                    state.currentTheta = state.currentTheta > Math.PI ? 2*Math.PI - Math.acos(cosTh) : Math.acos(cosTh);
+                } else if (d < Math.abs(l3 - l4)) {
+                    let cosTh = (l1*l1 + l2*l2 - (l3-l4)*(l3-l4)) / (2*l1*l2);
+                    cosTh = Math.max(-1, Math.min(1, cosTh));
+                    state.currentTheta = state.currentTheta > Math.PI ? 2*Math.PI - Math.acos(cosTh) : Math.acos(cosTh);
+                }
+            } else if (state.mode === 'slider') {
+                const { r, l } = state.slider;
+                if (r > l && Math.abs(r * Math.sin(state.currentTheta)) > l) {
+                    const limit = Math.asin(l/r);
+                    if (Math.cos(state.currentTheta) > 0) {
+                        state.currentTheta = state.currentTheta > Math.PI ? 2*Math.PI - limit : limit;
+                    } else {
+                        state.currentTheta = state.currentTheta > Math.PI ? Math.PI + limit : Math.PI - limit;
+                    }
+                }
             }
         }
 
@@ -491,7 +575,7 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             const sin_theta = Math.sin(theta);
             const cos_theta = Math.cos(theta);
             
-            if (Math.abs(sin_theta / n) > 1) return { error: "Jam/Invalid" };
+            if (Math.abs(sin_theta / n) > 1) return { error: "Position Not Reachable" };
 
             const sin_phi = sin_theta / n;
             const cos_phi = Math.sqrt(1 - sin_phi*sin_phi);
@@ -515,7 +599,7 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             const C = k1 - (k2 + 1) * Math.cos(theta2) + k3;
             
             const disc = B*B - 4*A*C;
-            if (disc < 0) return { error: "Not Reachable" };
+            if (disc < 0) return { error: "Position Not Reachable" };
 
             const sign = state.fourbar.mode; 
             const theta4 = 2 * Math.atan((-B + sign * Math.sqrt(disc)) / (2 * A));
@@ -525,7 +609,7 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             const theta3 = Math.atan2(sin3, cos3);
             
             const den = Math.sin(theta3 - theta4);
-            if (Math.abs(den) < 1e-6) return { error: "Singularity" };
+            if (Math.abs(den) < 1e-6) return { error: "Singularity/Toggle" };
 
             const w3 = (L2 * w2 * Math.sin(theta4 - theta2)) / (L3 * den);
             const w4 = (L2 * w2 * Math.sin(theta3 - theta2)) / (L4 * den);
@@ -540,19 +624,49 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
         }
 
         // --- View & Data Updates ---
+        function updateInspector() {
+            const thetaDeg = parseFloat(document.getElementById('inspect-theta').value) || 0;
+            const theta = thetaDeg * Math.PI / 180;
+            const resultsEl = document.getElementById('inspect-results');
+            
+            if (state.mode === 'slider') {
+                const res = solveSliderCrank(state.slider.r, state.slider.l, state.slider.w, theta);
+                if (res.error) {
+                    resultsEl.innerHTML = `<span class="text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded">${res.error}</span>`;
+                } else {
+                    resultsEl.innerHTML = `
+                        <div class="flex flex-col"><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Rod Vel (ω₂)</span><span class="font-mono text-base font-semibold text-blue-600 dark:text-blue-400">${res.w_rod.toFixed(4)} <span class="font-sans font-normal text-xs text-slate-400">rad/s</span></span></div>
+                        <div class="flex flex-col"><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Slider Vel (vₛ)</span><span class="font-mono text-base font-semibold text-emerald-600 dark:text-emerald-400">${res.v_slider.toFixed(4)} <span class="font-sans font-normal text-xs text-slate-400">m/s</span></span></div>
+                        <div class="flex flex-col"><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Rod Acc (α₂)</span><span class="font-mono text-base font-semibold text-blue-600 dark:text-blue-400">${res.alpha_rod.toFixed(4)} <span class="font-sans font-normal text-xs text-slate-400">rad/s²</span></span></div>
+                        <div class="flex flex-col"><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Slider Acc (aₛ)</span><span class="font-mono text-base font-semibold text-emerald-600 dark:text-emerald-400">${res.a_slider.toFixed(4)} <span class="font-sans font-normal text-xs text-slate-400">m/s²</span></span></div>
+                    `;
+                }
+            } else {
+                const res = solveFourBar(state.fourbar.l1, state.fourbar.l2, state.fourbar.l3, state.fourbar.l4, state.fourbar.w2, theta);
+                if (res.error) {
+                    resultsEl.innerHTML = `<span class="text-red-500 font-medium bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded">${res.error}</span>`;
+                } else {
+                    resultsEl.innerHTML = `
+                        <div class="flex flex-col"><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Coupler Vel (ω₃)</span><span class="font-mono text-base font-semibold text-blue-600 dark:text-blue-400">${res.w3.toFixed(4)} <span class="font-sans font-normal text-xs text-slate-400">rad/s</span></span></div>
+                        <div class="flex flex-col"><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Follower Vel (ω₄)</span><span class="font-mono text-base font-semibold text-red-500 dark:text-red-400">${res.w4.toFixed(4)} <span class="font-sans font-normal text-xs text-slate-400">rad/s</span></span></div>
+                        <div class="flex flex-col"><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Coupler Acc (α₃)</span><span class="font-mono text-base font-semibold text-blue-600 dark:text-blue-400">${res.alpha3.toFixed(4)} <span class="font-sans font-normal text-xs text-slate-400">rad/s²</span></span></div>
+                        <div class="flex flex-col"><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Follower Acc (α₄)</span><span class="font-mono text-base font-semibold text-red-500 dark:text-red-400">${res.alpha4.toFixed(4)} <span class="font-sans font-normal text-xs text-slate-400">rad/s²</span></span></div>
+                    `;
+                }
+            }
+        }
+
         function updateAnalysis() {
             readInputs();
+            snapToValidLimits(); 
+
             const thead = document.getElementById('table-head');
             const tbody = document.getElementById('table-body');
             
             let headHTML = '';
             let bodyHTML = '';
 
-            // Reset graph data objects
-            state.graphData = {
-                labels: [],
-                y1: [], y2: [], y3: [], y4: []
-            };
+            state.graphData = { labels: [], y1: [], y2: [], y3: [], y4: [] };
 
             if (state.mode === 'slider') {
                 headHTML = `<tr>
@@ -567,14 +681,8 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                     const theta = deg * Math.PI / 180;
                     const res = solveSliderCrank(state.slider.r, state.slider.l, state.slider.w, theta);
                     if (res.error) {
-                        bodyHTML += `<tr class="bg-red-50 dark:bg-red-900/20"><td class="px-6 py-3 font-medium">${deg}°</td><td colspan="4" class="px-6 py-3 text-red-500 dark:text-red-400">${res.error}</td></tr>`;
+                        bodyHTML += `<tr class="bg-red-50 dark:bg-red-900/20"><td class="px-6 py-3 font-medium">${deg}°</td><td colspan="4" class="px-6 py-3 text-red-500 dark:text-red-400 font-medium">${res.error}</td></tr>`;
                     } else {
-                        state.graphData.labels.push(deg);
-                        state.graphData.y1.push(res.w_rod);
-                        state.graphData.y2.push(res.v_slider);
-                        state.graphData.y3.push(res.alpha_rod);
-                        state.graphData.y4.push(res.a_slider);
-
                         bodyHTML += `
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                             <td class="px-6 py-3 font-medium text-slate-900 dark:text-slate-100">${deg}°</td>
@@ -598,14 +706,8 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                     const theta = deg * Math.PI / 180;
                     const res = solveFourBar(state.fourbar.l1, state.fourbar.l2, state.fourbar.l3, state.fourbar.l4, state.fourbar.w2, theta);
                     if (res.error) {
-                        bodyHTML += `<tr class="bg-red-50 dark:bg-red-900/20"><td class="px-6 py-3 font-medium">${deg}°</td><td colspan="4" class="px-6 py-3 text-red-500 dark:text-red-400">${res.error}</td></tr>`;
+                        bodyHTML += `<tr class="bg-red-50 dark:bg-red-900/20"><td class="px-6 py-3 font-medium">${deg}°</td><td colspan="4" class="px-6 py-3 text-red-500 dark:text-red-400 font-medium">${res.error}</td></tr>`;
                     } else {
-                        state.graphData.labels.push(deg);
-                        state.graphData.y1.push(res.w3);
-                        state.graphData.y2.push(res.w4);
-                        state.graphData.y3.push(res.alpha3);
-                        state.graphData.y4.push(res.alpha4);
-
                         bodyHTML += `
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                             <td class="px-6 py-3 font-medium text-slate-900 dark:text-slate-100">${deg}°</td>
@@ -618,18 +720,50 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                 });
             }
 
+            for (let deg = 0; deg <= 360; deg++) {
+                state.graphData.labels.push(deg);
+                const theta = deg * Math.PI / 180;
+                
+                if (state.mode === 'slider') {
+                    const res = solveSliderCrank(state.slider.r, state.slider.l, state.slider.w, theta);
+                    if (res.error) {
+                        state.graphData.y1.push(null);
+                        state.graphData.y2.push(null);
+                        state.graphData.y3.push(null);
+                        state.graphData.y4.push(null);
+                    } else {
+                        state.graphData.y1.push(res.w_rod);
+                        state.graphData.y2.push(res.v_slider);
+                        state.graphData.y3.push(res.alpha_rod);
+                        state.graphData.y4.push(res.a_slider);
+                    }
+                } else {
+                    const res = solveFourBar(state.fourbar.l1, state.fourbar.l2, state.fourbar.l3, state.fourbar.l4, state.fourbar.w2, theta);
+                    if (res.error) {
+                        state.graphData.y1.push(null);
+                        state.graphData.y2.push(null);
+                        state.graphData.y3.push(null);
+                        state.graphData.y4.push(null);
+                    } else {
+                        state.graphData.y1.push(res.w3);
+                        state.graphData.y2.push(res.w4);
+                        state.graphData.y3.push(res.alpha3);
+                        state.graphData.y4.push(res.alpha4);
+                    }
+                }
+            }
+
             thead.innerHTML = headHTML;
             tbody.innerHTML = bodyHTML;
 
-            // Automatically refresh graphs if modal is open
-            if(!document.getElementById('graphs-modal').classList.contains('hidden')){
+            if(!document.getElementById('graphs-modal').classList.contains('hidden')) {
                 renderGraphs();
+                updateInspector();
             }
         }
 
         // --- Chart.js Plotting Engine ---
         function renderGraphs() {
-            // Destroy old charts to prevent overlapping renders
             chartInstances.forEach(c => c.destroy());
             chartInstances = [];
 
@@ -638,9 +772,7 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             const textColor = isDark ? '#cbd5e1' : '#475569';
             const xAxisLabel = state.mode === 'slider' ? 'Crank Angle θ (degrees)' : 'Crank Angle θ₂ (degrees)';
 
-            // Setup chart configurations
             const configs = [];
-
             if(state.mode === 'fourbar') {
                 configs.push(
                     createChartConfig('Coupler Angular Velocity ω₃', state.graphData.y1, 'ω₃ (rad/s)', 'rgba(37, 99, 235, 1)', 'rgba(37, 99, 235, 0.1)', isDark, gridColor, textColor, xAxisLabel),
@@ -657,15 +789,15 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                 );
             }
 
-            // Render to the 4 canvases
             ['chart1', 'chart2', 'chart3', 'chart4'].forEach((id, index) => {
                 const ctx = document.getElementById(id).getContext('2d');
                 chartInstances.push(new Chart(ctx, configs[index]));
             });
         }
 
-        // Factory function for chart creation
         function createChartConfig(title, dataPoints, yLabel, lineColor, fillAreaColor, isDark, gridColor, textColor, xAxisLabel) {
+            const desiredTicks = [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360];
+            
             return {
                 type: 'line',
                 data: {
@@ -677,10 +809,10 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                         backgroundColor: fillAreaColor,
                         borderWidth: 2,
                         pointBackgroundColor: lineColor,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
+                        pointRadius: 0, 
+                        pointHoverRadius: 4,
                         fill: true,
-                        tension: 0.2 // Slight smoothing
+                        tension: 0.2
                     }]
                 },
                 options: {
@@ -688,36 +820,43 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
-                        title: {
-                            display: true,
-                            text: title,
-                            color: textColor,
-                            font: { size: 14, family: "'Inter', sans-serif", weight: 'normal' }
-                        },
+                        title: { display: true, text: title, color: textColor, font: { size: 14, family: "'Inter', sans-serif", weight: 'normal' } },
                         tooltip: {
-                            mode: 'index',
-                            intersect: false,
+                            mode: 'index', intersect: false,
                             backgroundColor: isDark ? 'rgba(15, 23, 42, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                             titleColor: isDark ? '#fff' : '#000',
                             bodyColor: isDark ? '#e2e8f0' : '#334155',
-                            borderColor: gridColor,
-                            borderWidth: 1
+                            borderColor: gridColor, borderWidth: 1
                         }
                     },
                     scales: {
-                        x: {
-                            title: { display: true, text: xAxisLabel, color: textColor },
-                            grid: { color: gridColor },
-                            ticks: { color: textColor }
-                        },
-                        y: {
-                            title: { display: true, text: yLabel, color: textColor },
+                        x: { 
+                            title: { display: true, text: xAxisLabel, color: textColor }, 
                             grid: { 
-                                color: (ctx) => ctx.tick.value === 0 ? (isDark ? '#64748b' : '#94a3b8') : gridColor,
-                                lineWidth: (ctx) => ctx.tick.value === 0 ? 1.5 : 1,
-                                borderDash: (ctx) => ctx.tick.value === 0 ? [5, 5] : []
-                            },
-                            ticks: { color: textColor }
+                                color: (ctx) => {
+                                    if (ctx.tick === undefined) return 'transparent';
+                                    const labelStr = state.graphData.labels[ctx.tick.value];
+                                    return desiredTicks.includes(Number(labelStr)) ? gridColor : 'transparent';
+                                }
+                            }, 
+                            ticks: { 
+                                color: textColor,
+                                autoSkip: false, 
+                                maxRotation: 45, 
+                                callback: function(value) {
+                                    const label = Number(this.getLabelForValue(value));
+                                    return desiredTicks.includes(label) ? label : null;
+                                }
+                            } 
+                        },
+                        y: { 
+                            title: { display: true, text: yLabel, color: textColor }, 
+                            grid: { 
+                                color: (ctx) => (ctx.tick && ctx.tick.value === 0) ? (isDark ? '#64748b' : '#94a3b8') : gridColor,
+                                lineWidth: (ctx) => (ctx.tick && ctx.tick.value === 0) ? 1.5 : 1,
+                                borderDash: (ctx) => (ctx.tick && ctx.tick.value === 0) ? [5, 5] : []
+                            }, 
+                            ticks: { color: textColor } 
                         }
                     },
                     interaction: { mode: 'nearest', axis: 'x', intersect: false }
@@ -725,16 +864,13 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             };
         }
 
-        // --- Canvas Rendering Engine ---
+        // --- Canvas Rendering & Kinematics Bouncing Loop ---
         function resizeCanvas() {
             if (!canvas || !canvas.parentElement) return;
             const rect = canvas.parentElement.getBoundingClientRect();
             const w = Math.round(rect.width);
             const h = Math.round(rect.height);
-            if (canvas.width !== w || canvas.height !== h) {
-                canvas.width = w;
-                canvas.height = h;
-            }
+            if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
         }
 
         function animate(time) {
@@ -746,25 +882,48 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             resizeCanvas();
 
             if (state.isPlaying) {
-                const w = state.mode === 'slider' ? state.slider.w : state.fourbar.w2;
-                state.currentTheta = (state.currentTheta + w * dt) % (2 * Math.PI);
-                if (isNaN(state.currentTheta)) state.currentTheta = 0;
-                if (state.currentTheta < 0) state.currentTheta += 2 * Math.PI;
+                if (state.mode === 'slider') {
+                    const { r, l } = state.slider;
+                    const w = state.slider.w * state.slider.w_dir;
+                    let nextTheta = state.currentTheta + w * dt;
+                    
+                    if (r > l && Math.abs(r * Math.sin(nextTheta)) > l) {
+                        state.slider.w_dir *= -1; 
+                    } else {
+                        state.currentTheta = (nextTheta % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+                    }
+                    mechTypeEl.innerText = getSliderClassification(r, l);
+                    
+                } else if (state.mode === 'fourbar') {
+                    const { l1, l2, l3, l4 } = state.fourbar;
+                    mechTypeEl.innerText = getFourBarClassification(l1, l2, l3, l4);
+                    const maxL = Math.max(l1, l2, l3, l4);
+                    
+                    if (maxL < l1+l2+l3+l4 - maxL) { 
+                        const w = state.fourbar.w2 * state.fourbar.w_dir;
+                        let nextTheta = state.currentTheta + w * dt;
+                        
+                        let d2 = l1*l1 + l2*l2 - 2*l1*l2*Math.cos(nextTheta);
+                        let d = Math.sqrt(d2);
+                        
+                        if (d > l3 + l4 || d < Math.abs(l3 - l4)) {
+                            state.fourbar.w_dir *= -1; 
+                        } else {
+                            state.currentTheta = (nextTheta % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+                        }
+                    }
+                }
             }
 
-            if (canvas.width > 0 && canvas.height > 0) {
-                drawCanvas();
-            }
-            
+            if (canvas.width > 0 && canvas.height > 0) drawCanvas();
             requestAnimationFrame(animate);
         }
 
         function drawCanvas() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
-            
             ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.scale(1, -1); // Standard cartesian (Y up)
+            ctx.scale(1, -1); 
             
             const isDark = document.documentElement.classList.contains('dark');
 
@@ -780,7 +939,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             liveDataEl.innerText = `θ: ${deg}°`;
         }
 
-        // --- Mechanical Drawing Primitives ---
         function drawPin(x, y, isDark, scale) {
             const rad = 5 / scale;
             ctx.beginPath();
@@ -791,7 +949,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.strokeStyle = isDark ? '#94a3b8' : '#334155';
             ctx.stroke();
             
-            // Inner dot
             ctx.beginPath();
             ctx.arc(x, y, rad * 0.3, 0, 2*Math.PI);
             ctx.fillStyle = isDark ? '#94a3b8' : '#334155';
@@ -803,7 +960,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.save();
             ctx.translate(x, y);
             
-            // Base Triangle
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(-size/1.5, -size);
@@ -815,7 +971,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.lineWidth = 2 / scale;
             ctx.stroke();
 
-            // Hatches (ground indicator)
             ctx.beginPath();
             for(let i = -size/1.5; i <= size/1.5; i += size/3) {
                 ctx.moveTo(i, -size);
@@ -823,15 +978,11 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             }
             ctx.stroke();
             ctx.restore();
-            
             drawPin(x, y, isDark, scale);
         }
 
-        // --- Robust Solvers for Perfect Visual Animation ---
-
         function drawSliderCrankRobust(isDark) {
             const { r, l } = state.slider;
-            
             const maxReach = r + l;
             const scale = ((Math.min(canvas.width, canvas.height) * 0.4) / maxReach) * state.zoom;
             if (scale <= 0 || !isFinite(scale)) return;
@@ -839,20 +990,17 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.scale(scale, scale);
             ctx.translate(-maxReach/2, 0);
 
-            // Robust Geometric Position
             const xA = r * Math.cos(state.currentTheta);
             const yA = r * Math.sin(state.currentTheta);
             
-            // Determine slider x via pythagoras (guarantees connection)
             const underRoot = l*l - yA*yA;
-            const isBroken = underRoot < 0;
-            const xB = isBroken ? xA + l : xA + Math.sqrt(underRoot);
+            const isBroken = underRoot < -1e-6; 
+            const xB = isBroken ? xA + l : xA + Math.sqrt(Math.max(0, underRoot));
 
             const trackY = 0;
             const bWidth = (r+l)*0.2;
             const bHeight = bWidth * 0.5;
 
-            // 1. Draw Slider Track (Ground)
             ctx.beginPath();
             ctx.moveTo(-r*1.5, trackY - bHeight/2);
             ctx.lineTo(maxReach*1.2, trackY - bHeight/2);
@@ -860,7 +1008,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.lineWidth = 4 / scale;
             ctx.stroke();
             
-            // Track Hatches
             ctx.beginPath();
             for(let i = -r*1.5; i <= maxReach*1.2; i += 20/scale) {
                 ctx.moveTo(i, trackY - bHeight/2 - 2/scale);
@@ -878,11 +1025,9 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                 ctx.restore();
             }
 
-            // 2. Draw Links
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             
-            // Crank
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(xA, yA);
@@ -890,7 +1035,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.lineWidth = 8 / scale;
             ctx.stroke();
 
-            // Coupler Rod
             ctx.beginPath();
             ctx.moveTo(xA, yA);
             ctx.lineTo(xB, trackY);
@@ -898,16 +1042,12 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.lineWidth = 8 / scale;
             ctx.stroke();
 
-            // 3. Draw Slider Block
             ctx.fillStyle = isDark ? '#334155' : '#e2e8f0';
             ctx.strokeStyle = isDark ? '#64748b' : '#475569';
             ctx.lineWidth = 3 / scale;
-            
-            // Centered block around pin
             ctx.fillRect(xB - bWidth/2, trackY - bHeight/2, bWidth, bHeight);
             ctx.strokeRect(xB - bWidth/2, trackY - bHeight/2, bWidth, bHeight);
 
-            // 4. Draw Pins
             drawGroundPivot(0, 0, isDark, scale);
             drawPin(xA, yA, isDark, scale);
             drawPin(xB, trackY, isDark, scale);
@@ -915,15 +1055,30 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
 
         function drawFourBarRobust(isDark) {
             const { l1, l2, l3, l4 } = state.fourbar;
-            
-            const maxExtent = Math.max(l1, l2+l3, l4);
-            const scale = ((Math.min(canvas.width, canvas.height) * 0.35) / maxExtent) * state.zoom;
+            const maxExtent = Math.max(l1, l2, l3, l4);
+            const scale = ((Math.min(canvas.width, canvas.height) * 0.35) / Math.max(l1, l2+l3, l4)) * state.zoom;
             if (scale <= 0 || !isFinite(scale)) return;
             
             ctx.scale(scale, scale);
             ctx.translate(-l1/2, 0); 
 
-            // Robust Geometric Circle Intersection
+            if (maxExtent >= l1+l2+l3+l4 - maxExtent) {
+                ctx.save();
+                ctx.scale(1, -1);
+                ctx.fillStyle = isDark ? '#f87171' : '#ef4444';
+                ctx.font = `bold ${24/state.zoom}px sans-serif`;
+                ctx.fillText(`INVALID MECHANISM (CANNOT ASSEMBLE)`, -l1/2, l2);
+                ctx.restore();
+                
+                ctx.beginPath();
+                ctx.moveTo(0, 0); ctx.lineTo(l1, 0);
+                ctx.strokeStyle = isDark ? '#334155' : '#cbd5e1';
+                ctx.lineWidth = 12 / scale;
+                ctx.stroke();
+                drawGroundPivot(0, 0, isDark, scale); drawGroundPivot(l1, 0, isDark, scale);
+                return;
+            }
+
             const xA = l2 * Math.cos(state.currentTheta);
             const yA = l2 * Math.sin(state.currentTheta);
             
@@ -935,17 +1090,16 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             let xB = 0, yB = 0;
             let isBroken = false;
 
-            if (d > l3 + l4 || d < Math.abs(l3 - l4)) {
+            if (d > l3 + l4 + 1e-6 || d < Math.abs(l3 - l4) - 1e-6) {
                 isBroken = true;
-                xB = o4x + l4; // Default straight out for broken visualization
+                xB = o4x + l4; 
                 yB = 0;
             } else {
                 const a = (l3*l3 - l4*l4 + d*d) / (2*d);
-                const h = Math.sqrt(l3*l3 - a*a);
+                const h = Math.sqrt(Math.max(0, l3*l3 - a*a));
                 const p2x = xA + a * dx / d;
                 const p2y = yA + a * dy / d;
                 
-                // Flip intersection point based on assembly mode
                 const sign = state.fourbar.mode; 
                 xB = p2x + sign * h * dy / d; 
                 yB = p2y - sign * h * dx / d;
@@ -960,7 +1114,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
                 ctx.restore();
             }
 
-            // Draw Ground Link connection (visual only)
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(o4x, o4y);
@@ -969,12 +1122,10 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.lineCap = 'round';
             ctx.stroke();
 
-            // Draw Links
             const lw = 8 / scale;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
-            // Crank (L2)
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(xA, yA);
@@ -982,7 +1133,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.lineWidth = lw;
             ctx.stroke();
 
-            // Coupler (L3) - dashed if broken
             ctx.beginPath();
             if (isBroken) ctx.setLineDash([15/scale, 10/scale]);
             ctx.moveTo(xA, yA);
@@ -990,9 +1140,8 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.strokeStyle = isDark ? '#94a3b8' : '#64748b';
             ctx.lineWidth = lw;
             ctx.stroke();
-            ctx.setLineDash([]); // reset
+            ctx.setLineDash([]); 
 
-            // Follower (L4)
             ctx.beginPath();
             ctx.moveTo(o4x, o4y);
             ctx.lineTo(xB, yB);
@@ -1000,7 +1149,6 @@ def fourbar_acceleration(L2, L3, L4, theta2, theta3, theta4, omega2, omega3, ome
             ctx.lineWidth = lw;
             ctx.stroke();
 
-            // Draw Pivots & Pins
             drawGroundPivot(0, 0, isDark, scale);
             drawGroundPivot(o4x, o4y, isDark, scale);
             drawPin(xA, yA, isDark, scale);
