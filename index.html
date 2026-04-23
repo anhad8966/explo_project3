@@ -443,82 +443,244 @@
 
     <!-- Python Code Modal -->
     <div id="code-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xl z-50 hidden flex justify-center items-center p-4 md:p-8 transition-opacity duration-300">
-        <div class="bg-slate-900 rounded-3xl shadow-2xl w-full max-w-4xl max-h-full flex flex-col overflow-hidden border border-slate-700 ring-1 ring-white/10">
-            <div class="flex justify-between items-center px-6 py-5 border-b border-slate-700/50 bg-slate-800/50">
-                <h2 class="text-lg font-bold text-white flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-inner">
-                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+        <div class="bg-white dark:bg-[#0a0a16] rounded-[2rem] shadow-2xl w-full max-w-4xl max-h-full flex flex-col overflow-hidden border border-slate-200 dark:border-white/10 ring-1 ring-black/5 dark:ring-white/5">
+            <div class="flex justify-between items-center px-8 py-6 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/40">
+                <h2 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl btn-gradient flex items-center justify-center shadow-lg">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     </div>
-                    Python Source Code
+                    Python Engine Code
                 </h2>
-                <button onclick="toggleModal('code-modal')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-xl transition-all">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button onclick="toggleModal('code-modal')" class="p-2.5 text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl transition-all">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div class="overflow-auto flex-1 p-6 bg-[#1d1f21] text-sm custom-scroll">
-<pre><code class="language-python" id="python-code-block">
-import sys
+            <div class="overflow-auto flex-1 p-6 bg-slate-900 dark:bg-[#13132b] text-[14px] font-mono custom-scroll text-slate-300">
+<pre class="!bg-transparent !m-0 !p-0"><code class="language-python !text-slate-200" id="python-code-block" style="color: #e2e8f0; text-shadow: none;">
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import fsolve
 
 # ==========================================
 # Problem 1: Slider-Crank Analysis
 # ==========================================
+print("--- Problem 1: Slider-Crank ---")
 r = float(input("Enter crank length (r): "))
 l = float(input("Enter connecting rod length (l): "))
-if l &lt;= r:
-    sys.exit("Error: Connecting rod must be greater than crank radius.")
-omega = float(input("Enter crank angular velocity (rad/s): "))
-angles = input("Enter crank angles (space separated): ").split()
 
-def slider_crank_kinematics(r, l, omega, theta_deg):
-    theta = np.radians(theta_deg)
-    n = l / r
-    cos_theta = np.cos(theta); sin_theta = np.sin(theta)
-    denom = np.sqrt(n**2 - sin_theta**2)
-    omega_2 = (omega * cos_theta) / denom
-    v_s = -r * omega * (sin_theta + (sin_theta * cos_theta) / denom)
-    alpha_2 = (-omega**2 * sin_theta * (n**2 - 1)) / (denom**3)
-    a_s = -r * (omega**2 * cos_theta + (omega**2 * (cos_theta**2 - sin_theta**2) / denom) + (omega**2 * sin_theta**2 * cos_theta**2) / (denom**3))
-    return omega_2, alpha_2, v_s, a_s
+if l &lt;= r:
+    raise ValueError("Connecting rod must be greater than crank length.")
+
+omega2 = float(input("Enter crank angular velocity (ω in rad/s): "))
+
+# Manual input angles
+theta_input = input("Enter crank angles (in degrees, space separated): ")
+theta_deg_manual = np.array(list(map(float, theta_input.split())))
+theta_manual = np.radians(theta_deg_manual)
+
+# CREATE SMOOTH RANGE 
+theta_min = np.min(theta_deg_manual)
+theta_max = np.max(theta_deg_manual)
+theta_deg_smooth = np.linspace(theta_min, theta_max, 300)
+theta_smooth = np.radians(theta_deg_smooth)
+
+def slider_crank(theta):
+    sin_theta = np.sin(theta)
+    cos_theta = np.cos(theta)
+
+    sin_theta3 = -(r / l) * sin_theta
+    cos_theta3 = np.sqrt(1 - sin_theta3**2)
+
+    theta3 = np.arctan2(sin_theta3, cos_theta3)
+
+    omega3 = -(r * omega2 * cos_theta) / (l * cos_theta3)
+
+    alpha3 = ((r * omega2**2 * sin_theta) + (l * omega3**2 * sin_theta3)) / (l * cos_theta3)
+
+    vslider = -(r * omega2 * sin_theta + l * omega3 * sin_theta3)
+
+    aslider = -(r * omega2**2 * cos_theta
+                + l * alpha3 * sin_theta3
+                + l * omega3**2 * cos_theta3)
+
+    return omega3, alpha3, vslider, aslider
+
+# MANUAL OUTPUT 
+omega3_m, alpha3_m, vslider_m, aslider_m = slider_crank(theta_manual)
+
+print("\nResults (Manual Angles):\n")
+for i in range(len(theta_manual)):
+    print(f"θ = {theta_deg_manual[i]:.2f}°")
+    print(f"  ω3 = {omega3_m[i]:.4f} rad/s")
+    print(f"  α3 = {alpha3_m[i]:.4f} rad/s²")
+    print(f"  Slider velocity = {vslider_m[i]:.4f} m/s")
+    print(f"  Slider acceleration = {aslider_m[i]:.4f} m/s²")
+    print("-" * 50)
+
+# SMOOTH GRAPH DATA 
+omega3_s, alpha3_s, vslider_s, aslider_s = slider_crank(theta_smooth)
+
+#  PLOTTING 
+plt.figure()
+plt.plot(theta_deg_smooth, vslider_s, label="Slider Velocity (smooth)")
+plt.plot(theta_deg_smooth, aslider_s, label="Slider Acceleration (smooth)")
+plt.scatter(theta_deg_manual, vslider_m, color='black', zorder=3)
+plt.scatter(theta_deg_manual, aslider_m, color='red', zorder=3)
+
+plt.xlabel("Crank Angle θ (degrees)")
+plt.ylabel("Value")
+plt.title("Slider Velocity & Acceleration vs Crank Angle")
+plt.legend()
+plt.grid()
+
+plt.figure()
+plt.plot(theta_deg_smooth, omega3_s, label="ω3 (smooth)")
+plt.plot(theta_deg_smooth, alpha3_s, label="α3 (smooth)")
+plt.scatter(theta_deg_manual, omega3_m, color='black', zorder=3)
+plt.scatter(theta_deg_manual, alpha3_m, color='red', zorder=3)
+
+plt.xlabel("Crank Angle θ (degrees)")
+plt.ylabel("Value")
+plt.title("Connecting Rod Motion vs Crank Angle")
+plt.legend()
+plt.grid()
+plt.show()
 
 # ==========================================
 # Problem 2: Four-Bar Analysis
 # ==========================================
-L1 = float(input("Enter L1: ")); L2 = float(input("Enter L2: "))
-L3 = float(input("Enter L3: ")); L4 = float(input("Enter L4: "))
-omega2 = float(input("Enter ω2 (rad/s): "))
-theta2_list = np.radians(list(map(float, input("Enter θ2 (deg): ").split())))
+print("\n--- Problem 2: Four-Bar ---")
+L1 = float(input("Enter fixed link length (L1): "))
+L2 = float(input("Enter crank length (L2): "))
+L3 = float(input("Enter coupler length (L3): "))
+L4 = float(input("Enter follower length (L4): "))
+omega2 = float(input("Enter crank angular velocity (ω2 in rad/s): "))
 
-for theta2 in theta2_list:
-    K1 = L1 / L2; K2 = L1 / L4; K3 = (L2**2 - L3**2 + L4**2 + L1**2) / (2 * L2 * L4)
-    A = np.cos(theta2) - K1 - K2*np.cos(theta2) + K3
-    B = -2*np.sin(theta2)
-    C = K1 - (K2 + 1)*np.cos(theta2) + K3
-    D = B**2 - 4*A*C
-    if D &lt; 0: continue
+theta_input = input("Enter crank angles (degrees, space separated): ")
+theta2_deg_manual = np.array(list(map(float, theta_input.split())))
+theta2_manual = np.radians(theta2_deg_manual)
 
-    theta4 = 2*np.arctan((-B - np.sqrt(D)) / (2*A))
-    theta3 = np.arctan2(L4*np.sin(theta4) - L2*np.sin(theta2), L1 + L4*np.cos(theta4) - L2*np.cos(theta2))
-    
-    denom_v = np.sin(theta3 - theta4)
-    if abs(denom_v) &lt; 1e-6: continue
+# CREATE SMOOTH RANGE 
+theta_dense = np.linspace(np.min(theta2_manual), np.max(theta2_manual), 300)
+theta2_deg_dense = np.degrees(theta_dense)
 
-    omega3 = (L2 * omega2 * np.sin(theta4 - theta2)) / (L3 * denom_v)
-    omega4 = (L2 * omega2 * np.sin(theta2 - theta3)) / (L4 * np.sin(theta4 - theta3))
+# POSITION SOLVER FUNCTION 
+def solve_positions(theta_array):
+    theta3 = np.zeros_like(theta_array)
+    theta4 = np.zeros_like(theta_array)
 
-    A1 = -L2*omega2**2*np.cos(theta2 -theta4) - L3*omega3**2*np.cos(theta3 - theta4) + L4*omega4**2
-    A2 = -L2*omega2**2*np.cos(theta2 - theta3) - L3*omega3**2 + L4*omega4**2*np.cos(theta4 -theta3)
-    alpha3 = A1 / (L3 * denom_v)
-    alpha4 = A2 / (L4 * np.sin(theta3 - theta4))
-    
-    # Transmission Angle (Mu)
-    mu = abs(theta3 - theta4)
-    if mu > np.pi: mu = 2*np.pi - mu
-    if mu > np.pi/2: mu = np.pi - mu
+    def equations(vars, theta2_val):
+        t3, t4 = vars
+        eq1 = L2*np.cos(theta2_val) + L3*np.cos(t3) - L4*np.cos(t4) - L1
+        eq2 = L2*np.sin(theta2_val) + L3*np.sin(t3) - L4*np.sin(t4)
+        return [eq1, eq2]
+
+    current_guess = [np.radians(60), np.radians(60)]
+
+    for i, t in enumerate(theta_array):
+        sol, info, ier, msg = fsolve(equations, current_guess, args=(t,), full_output=True)
+
+        if ier == 1:
+            theta3[i], theta4[i] = sol
+            current_guess = sol  # prevent flipping
+        else:
+            theta3[i] = np.nan
+            theta4[i] = np.nan
+
+    return theta3, theta4
+
+# VELOCITY & ACCELERATION FUNCTION 
+def compute_kinematics(theta2, theta3, theta4):
+    omega3 = np.full_like(theta2, np.nan)
+    omega4 = np.full_like(theta2, np.nan)
+    alpha3 = np.full_like(theta2, np.nan)
+    alpha4 = np.full_like(theta2, np.nan)
+
+    for i in range(len(theta2)):
+        if np.isnan(theta3[i]) or np.isnan(theta4[i]):
+            continue
+
+        denom = np.sin(theta3[i] - theta4[i])
+
+        if abs(denom) &lt; 1e-6:
+            continue  # singularity
+
+        # Velocity
+        omega3[i] = (L2 * omega2 * np.sin(theta4[i] - theta2[i])) / (L3 * denom)
+        omega4[i] = (L2 * omega2 * np.sin(theta2[i] - theta3[i])) / (L4 * np.sin(theta4[i] - theta3[i]))
+
+        # Acceleration
+        alpha3[i] = (-L2 * omega2**2 * np.cos(theta2[i] - theta4[i])
+                     + L4 * omega4[i]**2
+                     - L3 * omega3[i]**2 * np.cos(theta3[i] - theta4[i])) / (L3 * denom)
+
+        alpha4[i] = (L2 * omega2**2 * np.cos(theta2[i] - theta3[i])
+                     + L3 * omega3[i]**2
+                     - L4 * omega4[i]**2 * np.cos(theta4[i] - theta3[i])) / (L4 * np.sin(theta4[i] - theta3[i]))
+
+    return omega3, omega4, alpha3, alpha4
+
+# MANUAL CALCULATION 
+theta3_m, theta4_m = solve_positions(theta2_manual)
+omega3_m, omega4_m, alpha3_m, alpha4_m = compute_kinematics(theta2_manual, theta3_m, theta4_m)
+
+# OUTPUT 
+print("\nResults (Manual Angles):\n")
+for i in range(len(theta2_manual)):
+    if np.isnan(theta3_m[i]):
+        print(f"θ2 = {theta2_deg_manual[i]:.2f}° | Mechanism cannot assemble")
+    else:
+        print(f"θ2 = {theta2_deg_manual[i]:.2f}°")
+        print(f"  ω3 = {omega3_m[i]:.4f} rad/s")
+        print(f"  ω4 = {omega4_m[i]:.4f} rad/s")
+        print(f"  α3 = {alpha3_m[i]:.4f} rad/s²")
+        print(f"  α4 = {alpha4_m[i]:.4f} rad/s²")
+    print("-" * 50)
+
+# SMOOTH CALCULATION 
+theta3_d, theta4_d = solve_positions(theta_dense)
+omega3_d, omega4_d, alpha3_d, alpha4_d = compute_kinematics(theta_dense, theta3_d, theta4_d)
+
+# FILTER VALID POINTS
+valid = ~np.isnan(theta3_d)
+
+theta_plot = theta2_deg_dense[valid]
+omega3_plot = omega3_d[valid]
+omega4_plot = omega4_d[valid]
+alpha3_plot = alpha3_d[valid]
+alpha4_plot = alpha4_d[valid]
+
+# PLOTTING 
+
+# Velocity Plot
+plt.figure()
+plt.plot(theta_plot, omega3_plot, label='ω3 (Coupler)')
+plt.plot(theta_plot, omega4_plot, label='ω4 (Follower)')
+plt.scatter(theta2_deg_manual, omega3_m, color='black', zorder=3)
+plt.scatter(theta2_deg_manual, omega4_m, color='red', zorder=3)
+plt.xlabel('Crank Angle θ2 (degrees)')
+plt.ylabel('Angular Velocity (rad/s)')
+plt.title('Angular Velocity vs Crank Angle')
+plt.legend()
+plt.grid()
+
+# Acceleration Plot
+plt.figure()
+plt.plot(theta_plot, alpha3_plot, label='α3 (Coupler)')
+plt.plot(theta_plot, alpha4_plot, label='α4 (Follower)')
+plt.scatter(theta2_deg_manual, alpha3_m, color='black', zorder=3)
+plt.scatter(theta2_deg_manual, alpha4_m, color='red', zorder=3)
+plt.xlabel('Crank Angle θ2 (degrees)')
+plt.ylabel('Angular Acceleration (rad/s²)')
+plt.title('Angular Acceleration vs Crank Angle')
+plt.legend()
+plt.grid()
+
+plt.show()
 </code></pre>
             </div>
-            <div class="px-6 py-4 bg-slate-800 border-t border-slate-700/50 flex justify-end">
-                <button onclick="copyCode()" id="copy-btn" class="bg-indigo-500 hover:bg-indigo-400 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg hover:shadow-indigo-500/25">
+            <div class="px-6 py-4 bg-slate-800 dark:bg-black border-t border-slate-700/50 flex justify-end">
+                <button onclick="copyCode()" id="copy-btn" class="btn-gradient px-6 py-2.5 rounded-xl text-[14px] font-bold shadow-lg">
                     Copy to Clipboard
                 </button>
             </div>
